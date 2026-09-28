@@ -1,12 +1,19 @@
 {
   "v": 1,
-  "seq": 1,
-  "updatedAt": "2026-09-28T15:29:01Z",
+  "seq": 2,
+  "updatedAt": "2026-09-28T15:43:22Z",
   "plugins": [
     {
       "id": "com.ghostproxifier.showcase",
       "repo": "liliBestCoder/ghost-plugin-showcase",
       "devKey": "If0vcbIEqtyZXbcbVjXino9w/ZBqKMpk9XXzNsn+BGaidgubVohhQwTQUY8awXH4DaxDL7IIvuZ5CYhi3WjPUQ==",
+      "status": "listed",
+      "paid": false
+    },
+    {
+      "id": "com.ghostproxifier.events-viewer",
+      "repo": "liliBestCoder/ghost-plugin-events-viewer",
+      "devKey": "DcXHisMjX2pRB1UoJskOnQRqOSF6n1s3g4xD3fKTXIvbnEqfsS+bI/jxzBRT9cP5wulVS3/pfBRbv1gFffm6xQ==",
       "status": "listed",
       "paid": false
     }
