@@ -1,0 +1,7 @@
+# Signed bytes. The root signature covers registry.json exactly as it is
+# served; a line-ending conversion on checkout (core.autocrlf on Windows)
+# changes those bytes and every client then refuses the registry
+# (registry_bad_sig). Never convert.
+registry.json      -text
+registry.json.sig  -text
+root-public.b64    -text

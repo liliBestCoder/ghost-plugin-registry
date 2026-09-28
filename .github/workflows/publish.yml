@@ -1,0 +1,115 @@
+# Publish the official plugin registry: a push to main that changes
+# registry.json or registry.json.sig becomes the GitHub Release seq-<N>, which
+# is what Ghost downloads (releases/latest/download/registry.json).
+#
+# This workflow NEVER signs and holds NO secret. The root private key lives
+# offline with the maintainer, who signs registry.json on that machine and
+# commits both files (the SDK's docs/plugin-sdk/maintainer.md). All this does is
+# refuse to publish what a client would refuse to read:
+#
+#   1. root-public.b64 is filled in (the template ships it empty on purpose);
+#   2. registry.json parses the way a client parses it, and no devKey is
+#      still the template's all-zero placeholder (check-registry --strict);
+#   3. registry.json.sig verifies over the RAW bytes with the root PUBLIC key;
+#   4. seq is strictly greater than every seq-<N> already published -- a lower
+#      one is a rollback every client refuses (registry_rollback).
+name: publish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - registry.json
+      - registry.json.sig
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+env:
+  # The SDK (tools/plugin/) comes from a PUBLIC repository at a FIXED commit, not
+  # a branch: a tool that judges the registry should not change under you. Both
+  # are placeholders the first step refuses until they are set -- the SDK's
+  # docs/plugin-sdk/maintainer.md says where the public SDK lives, and the
+  # commit must contain the gpkg.py subcommands this workflow calls.
+  SDK_REPO: liliBestCoder/ghost-plugin-sdk
+  SDK_REF: 4a6fc4b7d593a7b9c1fdd905a42d81a5a5baad6a
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: The SDK is pinned (maintainer, read this if it fails)
+        run: |
+          if [ "$SDK_REPO" = "SET-ME-TO-THE-PUBLIC-SDK-REPO" ]; then
+            echo "::error::SDK_REPO is still the placeholder. Set it to the PUBLIC repository (owner/name) that carries tools/plugin/ -- this workflow checks it out with its own GITHUB_TOKEN, which cannot read a private repository."
+            exit 1
+          fi
+          if ! printf '%s' "$SDK_REF" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "::error::SDK_REF must be the 40-character sha of a commit of $SDK_REPO whose tools/plugin/gpkg.py has every subcommand used below; it is '$SDK_REF'"
+            exit 1
+          fi
+
+      - name: Check out the registry
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
+        with:
+          path: registry
+
+      - name: Check out the SDK tools
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
+        with:
+          repository: ${{ env.SDK_REPO }}
+          ref: ${{ env.SDK_REF }}
+          sparse-checkout: tools/plugin
+          path: sdk
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5.6.0
+        with:
+          python-version: '3.12'
+
+      - name: Install cryptography (pinned, hashed)
+        # A block scalar: in a plain scalar the ": " of "--only-binary=:all: -r"
+        # starts a mapping and GitHub rejects the whole file.
+        run: |
+          python -m pip install --require-hashes --only-binary=:all: -r registry/.github/requirements-release.txt
+
+      - name: The root public key is filled in
+        working-directory: registry
+        run: |
+          if [ ! -s root-public.b64 ]; then
+            echo "::error::root-public.b64 is empty. Put the official root PUBLIC key in it (88 base64 characters) -- never the private one."
+            exit 1
+          fi
+
+      - name: registry.json parses the way a client parses it
+        working-directory: registry
+        run: python ../sdk/tools/plugin/gpkg.py check-registry --strict --file registry.json
+
+      - name: registry.json.sig verifies with the root public key
+        working-directory: registry
+        run: python ../sdk/tools/plugin/gpkg.py verify-sig --pubkey root-public.b64 --file registry.json --sig registry.json.sig
+
+      - name: seq goes up
+        working-directory: registry
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          seq=$(python -c "import json; print(json.load(open('registry.json', 'rb'))['seq'])")
+          published=$(gh release list --repo "$GITHUB_REPOSITORY" --limit 1000 --json tagName --jq '.[].tagName' \
+                      | sed -n 's/^seq-\([0-9][0-9]*\)$/\1/p' | sort -n | tail -n 1)
+          if [ -n "$published" ] && [ "$seq" -le "$published" ]; then
+            echo "::error::seq $seq is not greater than the published seq-$published; clients would refuse it as a rollback"
+            exit 1
+          fi
+          echo "SEQ=$seq" >> "$GITHUB_ENV"
+
+      - name: Publish seq-<N>
+        working-directory: registry
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "seq-$SEQ" registry.json registry.json.sig \
+            --repo "$GITHUB_REPOSITORY" --title "seq-$SEQ" --notes "registry seq $SEQ" --latest

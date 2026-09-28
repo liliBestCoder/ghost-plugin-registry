@@ -1,0 +1,15 @@
+{
+  "v": 1,
+  "seq": 1,
+  "updatedAt": "2026-09-28T15:29:01Z",
+  "plugins": [
+    {
+      "id": "com.ghostproxifier.showcase",
+      "repo": "liliBestCoder/ghost-plugin-showcase",
+      "devKey": "If0vcbIEqtyZXbcbVjXino9w/ZBqKMpk9XXzNsn+BGaidgubVohhQwTQUY8awXH4DaxDL7IIvuZ5CYhi3WjPUQ==",
+      "status": "listed",
+      "paid": false
+    }
+  ],
+  "revoked": []
+}
