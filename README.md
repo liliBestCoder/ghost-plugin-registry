@@ -8,7 +8,7 @@
 
 | 项 | 值 |
 |---|---|
-| 最新版本 | `seq 3`（Release [`seq-3`](https://github.com/liliBestCoder/ghost-plugin-registry/releases/tag/seq-3)，`updatedAt` 2026-10-09T04:20:43Z） |
+| 最新版本 | `seq 4`（Release [`seq-4`](https://github.com/liliBestCoder/ghost-plugin-registry/releases/tag/seq-4)，`updatedAt` 2026-11-26T08:00:07Z） |
 | 根签名 | `registry.json.sig`，用正式根钥离线签名，发布前本地验签、工作流再验一次 |
 | 根公钥 | `root-public.b64`：`+jc4yKv3TV7hKxkBsgSjrflI2Wei8ePylSHnURxRVvhyIZEJM08lAnpoQdV+nFbcdpw6Uqm851I3/VOyyCdU/Q==` |
 | 根公钥指纹 | 64 字节 X‖Y 的 SHA-256：`ebcb486c95ec4e215ab065d8b6dbc009ea0869603b49c4fbff2c41b9636a8d27` |
@@ -23,6 +23,8 @@
 | `com.ghostproxifier.showcase`（插件能力示例） | [liliBestCoder/ghost-plugin-showcase](https://github.com/liliBestCoder/ghost-plugin-showcase) | `listed` | 否 |
 | `com.ghostproxifier.events-viewer`（事件查看器） | [liliBestCoder/ghost-plugin-events-viewer](https://github.com/liliBestCoder/ghost-plugin-events-viewer) | `listed` | 否 |
 | `com.qtvz.xieyos.port-forwarder`（端口转发） | [xieyos/ghost-plugin-port-forwarder](https://github.com/xieyos/ghost-plugin-port-forwarder) | `listed` | 否 |
+| `com.ghostproxifier.chrome-launcher`（Chrome 多开） | [liliBestCoder/ghost-chrome-launcher](https://github.com/liliBestCoder/ghost-chrome-launcher) | `listed` | 否 |
+| `com.ghostproxifier.flow-stats`（流量历史） | [liliBestCoder/ghost-flow-stats](https://github.com/liliBestCoder/ghost-flow-stats) | `listed` | 否 |
 
 每条的 `devKey` 是对应插件仓库里的 `dev-public.b64`。插件的发布说明必须用这把开发者钥签名，客户端才会安装。
 

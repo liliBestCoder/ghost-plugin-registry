@@ -1,7 +1,7 @@
 {
   "v": 1,
-  "seq": 3,
-  "updatedAt": "2026-10-09T04:20:43Z",
+  "seq": 4,
+  "updatedAt": "2026-11-26T08:00:07Z",
   "plugins": [
     {
       "id": "com.ghostproxifier.showcase",
@@ -21,6 +21,20 @@
       "id": "com.qtvz.xieyos.port-forwarder",
       "repo": "xieyos/ghost-plugin-port-forwarder",
       "devKey": "Ta3sAun8lgemNfxn85kGJ9ArWrL9XSPWRt9wEJLwmxwdQvZ99DapdfZ7ibObXHWCOCC1I9vWmAEY3tSkkFKNUg==",
+      "status": "listed",
+      "paid": false
+    },
+    {
+      "id": "com.ghostproxifier.chrome-launcher",
+      "repo": "liliBestCoder/ghost-chrome-launcher",
+      "devKey": "mZ6khudtDQZYZECm9ykUprtsxnL+cuVaET55LvLXJEfTXTsc7g2L+kgBb4xi+p8qlhWMAOn8DyJwPdxCDraY3w==",
+      "status": "listed",
+      "paid": false
+    },
+    {
+      "id": "com.ghostproxifier.flow-stats",
+      "repo": "liliBestCoder/ghost-flow-stats",
+      "devKey": "YrNpsGOhm91sITKs2d5rh50jW2yEJ2QvpgiS2DcQpHx3kMK9Btk/H45wxfQoP4JqceSQdSSGfzEwhjNhfzYzWw==",
       "status": "listed",
       "paid": false
     }
